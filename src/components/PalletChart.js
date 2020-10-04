@@ -1,7 +1,19 @@
 import React from 'react'
 import Chart from 'react-google-charts'
 
-const PalletChart = () => {
+const PalletChart = (props) => {
+    let barColor = 'green'
+
+    if (props.amount > 20) {
+        barColor = 'red'
+    } else if (props.amount > 10) {
+        barColor = 'orange'
+    } else {
+        barColor = 'green'
+    }
+
+    const boxCount = props.amount !== '' ? props.amount : 0
+
     return (
         <Chart
             width={'100%'}
@@ -15,15 +27,15 @@ const PalletChart = () => {
             ],
             [
                 'No. of boxes',
-                23,
+                boxCount,
             ]
             ]}
             options={{
             chart: {
-                title: 'Pallet: INV-2592020_124756',
+                title: `Pallet: ${props.palletID}`,
             },
             legend: { position: 'none' },
-            colors: ['red'],
+            colors: [barColor],
             axes: {
                 y: {
                     all: {
