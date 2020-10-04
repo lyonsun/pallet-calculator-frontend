@@ -1,0 +1,18 @@
+.App {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.main {
+    flex: 1;
+}
+
+.form-control-plaintext:focus {
+    outline: none;
+}
+
+.footer {
+    border-top: 3px solid #ffc107;
+    min-height: 100px;
+}
