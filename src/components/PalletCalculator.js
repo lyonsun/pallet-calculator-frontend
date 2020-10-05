@@ -16,6 +16,7 @@ class PalletCalculator extends Component {
         this.handleInputChange = this.handleInputChange.bind(this)
 
         this.handleNewPalletFormSubmit = this.handleNewPalletFormSubmit.bind(this)
+        this.handleDeliveryFormSubmit = this.handleDeliveryFormSubmit.bind(this)
 
         this.state = {
             palletID: '',
@@ -27,6 +28,8 @@ class PalletCalculator extends Component {
             days: 30,
             dueDate: '',
             showDeliveryForm: false,
+            showCreatedInfo: false,
+            boxesInChart: '',
             latestPallet: null
         }
     }
@@ -51,14 +54,14 @@ class PalletCalculator extends Component {
             })
             .then(pallets => {
                 if (pallets.length !== 0) {
-                    console.log(pallets[0])
                     let latestPallet = pallets[0]
                     // set palletID
                     // TODO: set amount as latestPallet.total_boxes
                     this.setState({
                         palletID: latestPallet.pallet_id,
                         showDeliveryForm: true,
-                        latestPallet: latestPallet
+                        latestPallet: latestPallet,
+                        boxesInChart: latestPallet.total_boxes
                     })
                 } else {
                     this.setState({
@@ -82,24 +85,38 @@ class PalletCalculator extends Component {
     handleAmountChange(e) {
         if (e.target.value === '') {
             this.setState({
-                amount: ''
+                amount: '',
+                // boxesInChart: this.state.latestPallet.total_boxes
             })
             return
         }
-        
+
+        // if (this.state.latestPallet.total_boxes === 25) {
+        //     alert(`This pallet is full, please create a new one by clicking the button above`)
+        //     return
+        // }
+
         const amount = parseInt(e.target.value)
 
         if (amount < 1) {
             alert('Please give a positive number')
             return
         }
+
         if (amount > 25) {
             alert('Please give a number smaller than 25')
             return
         }
 
+        // if (amount + this.state.latestPallet.total_boxes > 25) {
+        //     const remainingMax = 25 - this.state.latestPallet.total_boxes
+        //     alert(`There are already ${this.state.latestPallet.total_boxes} on the pallet, please give a number smaller than or equal to ${remainingMax}`)
+        //     return
+        // }
+
         this.setState({
-            amount: amount
+            amount: amount,
+            // boxesInChart: this.state.latestPallet.total_boxes + amount
         })
     }
 
@@ -129,9 +146,9 @@ class PalletCalculator extends Component {
         let currentTime = (new Date(Date.now() - tzOffset)).toISOString().slice(0, -1);
 
         let pallet = {
-            "pallet_id": pallet_id,
-            "total_boxes": 0,
-            "updated_at": currentTime
+            pallet_id: pallet_id,
+            total_boxes: 0,
+            updated_at: currentTime
         }
 
         // TODO: consider validate before creating new pallet
@@ -144,10 +161,78 @@ class PalletCalculator extends Component {
                 this.setState({
                     palletID: pallet.pallet_id,
                     showDeliveryForm: true,
-                    latestPallet: pallet
+                    latestPallet: pallet,
+                    boxesInChart: pallet.total_boxes
                 })
             })
 
+    }
+
+    handleDeliveryFormSubmit(e) {
+        e.preventDefault()
+
+        // TODO: form validation
+
+        let now = new Date()
+        let recordTime = now.toTimeString().slice(0, 5)
+
+        let record = {
+            username: "User 1",
+            box_number: this.state.boxNumber,
+            article_name: this.state.boxNumber,
+            batch_number: this.state.batchNumber,
+            amount: this.state.amount,
+            record_time: recordTime,
+            registration_date: this.state.recordDate,
+            due_date: this.state.dueDate,
+            pallet: this.state.latestPallet.id,
+        }
+
+        API.post(`records/`, record)
+            .then(res => {
+                return res.data
+            })
+            .then(record => {
+                const days = 30
+                const today = new Date()
+                const dateOfToday = today.toISOString().slice(0, 10)
+                const dateOfDueDate = new Date(today.getTime() + (days * 24 * 60 * 60 * 1000))
+                                        .toISOString()
+                                        .slice(0, 10)
+
+                let tzOffset = (new Date()).getTimezoneOffset() * 60000;
+                let currentTime = (new Date(Date.now() - tzOffset)).toISOString().slice(0, -1);
+
+                let updatedPallet = {
+                    pallet_id: record.pallet.pallet_id,
+                    total_boxes: record.pallet.total_boxes + 1,
+                    updated_at: currentTime
+                }
+
+                this.setState({
+                    boxNumber: '',
+                    articleName: '',
+                    amount: '',
+                    batchNumber: '',
+                    recordDate: dateOfToday,
+                    days: days,
+                    dueDate: dateOfDueDate,
+                    showCreatedInfo: true,
+                    boxesInChart: updatedPallet.total_boxes
+                })
+
+                // update pallet information
+                API.put(`pallets/${record.pallet.id}/`, updatedPallet)
+                    .then(res => {
+                        console.log(res)
+
+                        // hide alert message in 3 seconds
+                        setTimeout(
+                            () => this.setState({ showCreatedInfo: false }),
+                            5000
+                        );
+                    })
+            })
     }
 
     render() {
@@ -155,6 +240,8 @@ class PalletCalculator extends Component {
         if (this.state.showDeliveryForm) {
             deliveryForm = <DeliveryForm
                 formData={this.state}
+                showCreatedInfo={this.state.showCreatedInfo}
+                onFormSubmit={this.handleDeliveryFormSubmit}
                 onInputChange={this.handleInputChange}
                 onAmountChange={this.handleAmountChange}
                 onDaysChange={this.handleDaysChange} />
@@ -180,7 +267,7 @@ class PalletCalculator extends Component {
                         </div>
                         <div className="col-sm-4 pt-4 pb-4 pr-5 pl-5">
                             <PalletChart
-                                amount={this.state.amount}
+                                boxesInChart={this.state.boxesInChart}
                                 palletID={this.state.palletID} />
                         </div>
                     </div>

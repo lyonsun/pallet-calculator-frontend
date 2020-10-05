@@ -19,6 +19,13 @@
     outline: none;
 }
 
+.text-bold {
+    font-size: 1.2em;
+    font-weight: bold;
+    height: 40px;
+    line-height: 40px;
+}
+
 .footer {
     border-top: 3px solid #ffc107;
     min-height: 100px;

@@ -1,8 +1,15 @@
 import React from 'react'
 
 const DeliveryForm = (props) => {
+    let info
+    if (props.showCreatedInfo) {
+        info = <p className="text-danger text-bold">New delivery was recorded!</p>
+    } else {
+        info = <p></p>
+    }
+
     return (
-        <form>
+        <form onSubmit={props.onFormSubmit}>
             <div className="form-group row">
                 <label htmlFor="pallet-id" className="col-sm-4 col-form-label">Pallet ID: </label>
                 <div className="col-sm-8">
@@ -13,7 +20,6 @@ const DeliveryForm = (props) => {
                         className="form-control-plaintext"
                         id="pallet-id"
                         value={props.formData.palletID}
-                        // onChange={props.onInputChange}
                         placeholder="INV-2592020_124756" />
                 </div>
             </div>
@@ -23,6 +29,7 @@ const DeliveryForm = (props) => {
                     <input
                         type="text"
                         name="boxNumber"
+                        required
                         className="form-control"
                         value={props.formData.boxNumber}
                         onChange={props.onInputChange}
@@ -35,6 +42,7 @@ const DeliveryForm = (props) => {
                     <input
                         type="text"
                         name="articleName"
+                        required
                         className="form-control"
                         value={props.formData.articleName}
                         onChange={props.onInputChange}
@@ -47,6 +55,7 @@ const DeliveryForm = (props) => {
                     <input
                         type="number"
                         name="amount"
+                        required
                         className="form-control"
                         value={props.formData.amount}
                         min="1"
@@ -61,6 +70,7 @@ const DeliveryForm = (props) => {
                     <input
                         type="text"
                         name="batchNumber"
+                        required
                         className="form-control"
                         value={props.formData.batchNumber}
                         onChange={props.onInputChange}
@@ -87,7 +97,7 @@ const DeliveryForm = (props) => {
                         name="days"
                         className="custom-select"
                         id="days"
-                        defaultValue={props.formData.days}
+                        value={props.formData.days}
                         onChange={props.onDaysChange}
                     >
                         <option value="10">10</option>
@@ -111,10 +121,11 @@ const DeliveryForm = (props) => {
             </div>
             <div className="form-group row mt-4">
                 <div className="col-sm-6 mb-2">
-                    <input type="submit" className="btn btn-block btn-success" value="Save" />
+                    <input type="submit" className="btn btn-success" value="Save" />
                 </div>
                 <div className="col-sm-6 mb-2">
-                    <input type="submit" className="btn btn-block btn-primary" value="Print List" />
+                    { info }
+                    {/* <input type="submit" className="btn btn-block btn-primary" value="Print List" /> */}
                 </div>
             </div>
         </form>

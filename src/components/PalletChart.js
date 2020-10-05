@@ -2,17 +2,17 @@ import React from 'react'
 import Chart from 'react-google-charts'
 
 const PalletChart = (props) => {
+    const boxCount = props.boxesInChart
+
     let barColor = 'green'
 
-    if (props.amount > 20) {
+    if (boxCount > 20) {
         barColor = 'red'
-    } else if (props.amount > 10) {
+    } else if (boxCount > 15) {
         barColor = 'orange'
     } else {
         barColor = 'green'
     }
-
-    const boxCount = props.amount !== '' ? props.amount : 0
 
     return (
         <Chart
