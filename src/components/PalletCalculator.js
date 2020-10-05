@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import API from '../utils/API'
 
 import Header from './Header'
 import Footer from './Footer'
@@ -14,15 +15,19 @@ class PalletCalculator extends Component {
         this.handleAmountChange = this.handleAmountChange.bind(this)
         this.handleInputChange = this.handleInputChange.bind(this)
 
+        this.handleNewPalletFormSubmit = this.handleNewPalletFormSubmit.bind(this)
+
         this.state = {
-            palletID: 'INV-2592020_124756',
+            palletID: '',
             boxNumber: '',
             articleName: '',
             amount: '',
             batchNumber: '',
             recordDate: '',
             days: 30,
-            dueDate: ''
+            dueDate: '',
+            showDeliveryForm: false,
+            latestPallet: null
         }
     }
 
@@ -39,8 +44,28 @@ class PalletCalculator extends Component {
             dueDate: dateOfDueDate
         })
 
-        // TODO: get last updated pallet
-
+        // get last updated pallet
+        API.get(`pallets/`)
+            .then(res => {
+                return res.data
+            })
+            .then(pallets => {
+                if (pallets.length !== 0) {
+                    console.log(pallets[0])
+                    let latestPallet = pallets[0]
+                    // set palletID
+                    // TODO: set amount as latestPallet.total_boxes
+                    this.setState({
+                        palletID: latestPallet.pallet_id,
+                        showDeliveryForm: true,
+                        latestPallet: latestPallet
+                    })
+                } else {
+                    this.setState({
+                        showDeliveryForm: false
+                    })
+                }
+            })
     }
 
     handleDaysChange(e) {
@@ -88,20 +113,70 @@ class PalletCalculator extends Component {
         })
     }
 
+    handleNewPalletFormSubmit(e) {
+        e.preventDefault()
+
+        if (this.state.latestPallet !== null && this.state.latestPallet.total_boxes === 0) {
+            alert('You haven\'t loaded any boxes into the last created pallet yet. Please load something there first before creating new pallet.')
+            return
+        }
+
+        let random7 = Math.random().toString().substring(2, 9)
+        let random6 = Math.random().toString().substring(3, 9)
+        let pallet_id = `KG-${random7}_${random6}`
+
+        let tzOffset = (new Date()).getTimezoneOffset() * 60000;
+        let currentTime = (new Date(Date.now() - tzOffset)).toISOString().slice(0, -1);
+
+        let pallet = {
+            "pallet_id": pallet_id,
+            "total_boxes": 0,
+            "updated_at": currentTime
+        }
+
+        // TODO: consider validate before creating new pallet
+
+        API.post(`pallets/`, pallet)
+            .then(res => {
+                return res.data
+            })
+            .then(pallet => {
+                this.setState({
+                    palletID: pallet.pallet_id,
+                    showDeliveryForm: true,
+                    latestPallet: pallet
+                })
+            })
+
+    }
+
     render() {
+        let deliveryForm;
+        if (this.state.showDeliveryForm) {
+            deliveryForm = <DeliveryForm
+                formData={this.state}
+                onInputChange={this.handleInputChange}
+                onAmountChange={this.handleAmountChange}
+                onDaysChange={this.handleDaysChange} />
+        } else {
+            deliveryForm =
+                <p className="lead text-danger">
+                    No pallet found, please click button above to create one first.
+                </p>
+        }
+
         return (
             <>
                 <Header />
 
                 <main className="container-fluid mt-5">
                     <div className="row">
-                        <div className="col-sm-8 bg-warning p-4">
-                            <NewPalletForm />
-                            <DeliveryForm
-                                formData={this.state}
-                                onInputChange={this.handleInputChange}
-                                onAmountChange={this.handleAmountChange}
-                                onDaysChange={this.handleDaysChange} />
+                        <div className="col-sm-8 bg-warning p-4 forms">
+                            <NewPalletForm
+                                onFormSubmit={this.handleNewPalletFormSubmit} />
+
+                            { deliveryForm }
+
                         </div>
                         <div className="col-sm-4 pt-4 pb-4 pr-5 pl-5">
                             <PalletChart

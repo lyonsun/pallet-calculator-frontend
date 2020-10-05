@@ -8,6 +8,13 @@
     flex: 1;
 }
 
+.forms {
+    display: block;
+    height: 650px;
+    overflow: hidden;
+
+}
+
 .form-control-plaintext:focus {
     outline: none;
 }
