@@ -14,7 +14,7 @@ function App() {
     <div className="App">
       <Header />
 
-      <main className="container-fluid mt-5 main">
+      <main className="container-fluid main">
         <Switch>
           <Route exact path='/'>
             <PalletCalculator />

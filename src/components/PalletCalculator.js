@@ -27,7 +27,7 @@ class PalletCalculator extends Component {
             dueDate: '',
             showDeliveryForm: false,
             showCreatedInfo: false,
-            boxesInChart: '',
+            boxesInChart: 0,
             latestPallet: null
         }
     }

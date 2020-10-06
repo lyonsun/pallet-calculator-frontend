@@ -8,7 +8,7 @@ const Header = () => {
     const reportClass = location.pathname === "/report" ? "active" : "";
 
     return (
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top pl-4">
+        <nav className="navbar navbar-expand navbar-dark bg-dark fixed-top pl-4">
             <span className="navbar-brand mb-0 h1">Pallet Calculator</span>
 
             <ul className="navbar-nav">

@@ -6,6 +6,7 @@
 
 .main {
     flex: 1;
+    margin-top: 56px;
 }
 
 .forms {

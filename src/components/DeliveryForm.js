@@ -125,7 +125,6 @@ const DeliveryForm = (props) => {
                 </div>
                 <div className="col-sm-6 mb-2">
                     { info }
-                    {/* <input type="submit" className="btn btn-block btn-primary" value="Print List" /> */}
                 </div>
             </div>
         </form>
