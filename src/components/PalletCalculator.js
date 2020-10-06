@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import API from '../utils/API'
 
-import Header from './Header'
-import Footer from './Footer'
 import PalletChart from './PalletChart'
 import NewPalletForm from './NewPalletForm'
 import DeliveryForm from './DeliveryForm'
@@ -253,28 +251,20 @@ class PalletCalculator extends Component {
         }
 
         return (
-            <>
-                <Header />
+            <div className="row">
+                <div className="col-sm-8 bg-warning p-4 forms">
+                    <NewPalletForm
+                        onFormSubmit={this.handleNewPalletFormSubmit} />
 
-                <main className="container-fluid mt-5">
-                    <div className="row">
-                        <div className="col-sm-8 bg-warning p-4 forms">
-                            <NewPalletForm
-                                onFormSubmit={this.handleNewPalletFormSubmit} />
+                    { deliveryForm }
 
-                            { deliveryForm }
-
-                        </div>
-                        <div className="col-sm-4 pt-4 pb-4 pr-5 pl-5">
-                            <PalletChart
-                                boxesInChart={this.state.boxesInChart}
-                                palletID={this.state.palletID} />
-                        </div>
-                    </div>
-                </main>
-
-                <Footer />
-            </>
+                </div>
+                <div className="col-sm-4 pt-4 pb-4 pr-5 pl-5">
+                    <PalletChart
+                        boxesInChart={this.state.boxesInChart}
+                        palletID={this.state.palletID} />
+                </div>
+            </div>
         )
     }
 }
