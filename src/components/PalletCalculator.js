@@ -259,7 +259,7 @@ class PalletCalculator extends Component {
                     { deliveryForm }
 
                 </div>
-                <div className="col-sm-4 pt-4 pb-4 pr-5 pl-5">
+                <div className="col-sm-4 p-4">
                     <PalletChart
                         boxesInChart={this.state.boxesInChart}
                         palletID={this.state.palletID} />

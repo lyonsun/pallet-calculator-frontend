@@ -18,34 +18,29 @@ const PalletChart = (props) => {
         <Chart
             width={'100%'}
             height={'100%'}
-            chartType="Bar"
+            chartType="ColumnChart"
             loader={<div>Loading Chart</div>}
             data={[
-            [
-                'No. of boxes on pallet (max 25)',
-                'Amount',
-            ],
-            [
-                'No. of boxes',
-                boxCount,
-            ]
+                [
+                    'No. of boxes on pallet (max 25)',
+                    'Amount',
+                ],
+                [
+                    'No. of boxes on pallet (max 25)',
+                    boxCount,
+                ]
             ]}
             options={{
-            chart: {
                 title: `Pallet: ${props.palletID}`,
-            },
-            legend: { position: 'none' },
-            colors: [barColor],
-            axes: {
-                y: {
-                    all: {
-                        range: {
-                            max: 25,
-                            min: 0,
-                        }
+                legend: { position: 'none' },
+                colors: [barColor],
+                vAxis: {
+                    minValue: 0,
+                    maxValue: 25,
+                    gridlines: {
+                        count: 5,
                     }
-                }
-            },
+                },
             }}
         />
     )

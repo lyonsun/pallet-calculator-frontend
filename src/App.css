@@ -10,7 +10,7 @@
 
 .forms {
     display: block;
-    height: 650px;
+    height: 680px;
     overflow: hidden;
 
 }
@@ -24,9 +24,4 @@
     font-weight: bold;
     height: 40px;
     line-height: 40px;
-}
-
-.footer {
-    border-top: 3px solid #ffc107;
-    min-height: 100px;
 }
