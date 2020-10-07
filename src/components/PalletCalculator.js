@@ -17,6 +17,7 @@ class PalletCalculator extends Component {
         this.handleDeliveryFormSubmit = this.handleDeliveryFormSubmit.bind(this)
 
         this.state = {
+            loading: true,
             palletID: '',
             boxNumber: '',
             articleName: '',
@@ -51,10 +52,13 @@ class PalletCalculator extends Component {
                 return res.data
             })
             .then(pallets => {
+                this.setState({
+                    loading: false
+                })
+
                 if (pallets.length !== 0) {
                     let latestPallet = pallets[0]
-                    // set palletID
-                    // TODO: set amount as latestPallet.total_boxes
+
                     this.setState({
                         palletID: latestPallet.pallet_id,
                         showDeliveryForm: true,
@@ -84,15 +88,9 @@ class PalletCalculator extends Component {
         if (e.target.value === '') {
             this.setState({
                 amount: '',
-                // boxesInChart: this.state.latestPallet.total_boxes
             })
             return
         }
-
-        // if (this.state.latestPallet.total_boxes === 25) {
-        //     alert(`This pallet is full, please create a new one by clicking the button above`)
-        //     return
-        // }
 
         const amount = parseInt(e.target.value)
 
@@ -106,15 +104,8 @@ class PalletCalculator extends Component {
             return
         }
 
-        // if (amount + this.state.latestPallet.total_boxes > 25) {
-        //     const remainingMax = 25 - this.state.latestPallet.total_boxes
-        //     alert(`There are already ${this.state.latestPallet.total_boxes} on the pallet, please give a number smaller than or equal to ${remainingMax}`)
-        //     return
-        // }
-
         this.setState({
             amount: amount,
-            // boxesInChart: this.state.latestPallet.total_boxes + amount
         })
     }
 
@@ -250,8 +241,14 @@ class PalletCalculator extends Component {
                 </p>
         }
 
-        return (
-            <div className="row">
+
+        let content;
+        if (this.state.loading) {
+            content = <div className="col-sm-12 p-4">
+                <p className="lead">Loading...</p>
+            </div>
+        } else {
+            content = <>
                 <div className="col-sm-8 bg-warning p-4 forms">
                     <NewPalletForm
                         onFormSubmit={this.handleNewPalletFormSubmit} />
@@ -264,6 +261,12 @@ class PalletCalculator extends Component {
                         boxesInChart={this.state.boxesInChart}
                         palletID={this.state.palletID} />
                 </div>
+            </>
+        }
+
+        return (
+            <div className="row">
+                { content }
             </div>
         )
     }
