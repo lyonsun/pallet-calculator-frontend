@@ -21,7 +21,6 @@ class RecordReport extends Component {
                 return res.data
             })
             .then(records => {
-                console.log(records)
                 this.setState({
                     loading: false,
                     records: records
@@ -35,7 +34,6 @@ class RecordReport extends Component {
         if (this.state.loading) {
             content = <p className="lead">Loading...</p>
         } else {
-            console.log(this.state.records)
             if (this.state.records.length !== 0) {
                 content = <>
                     <div className="mt-4 mb-5">

@@ -9,9 +9,9 @@
     margin-top: 56px;
 }
 
-.forms {
+.forms, .chart {
     display: block;
-    height: 680px;
+    min-height: 680px;
     overflow: hidden;
 
 }
