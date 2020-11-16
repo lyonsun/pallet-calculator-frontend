@@ -6,8 +6,9 @@ import "bootstrap/dist/css/bootstrap.css"
 
 import Header from './components/Header'
 import Footer from './components/Footer'
-import PalletCalculator from './components/PalletCalculator'
-import RecordReport from './components/RecordReport'
+
+import PalletCalculator from './pages/PalletCalculator'
+import RecordReport from './pages/RecordReport'
 
 function App() {
   return (

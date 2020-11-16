@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import API from '../utils/API'
 
-import PalletChart from './PalletChart'
-import NewPalletForm from './NewPalletForm'
-import DeliveryForm from './DeliveryForm'
+import PalletChart from '../components/PalletChart'
+import NewPalletForm from '../components/NewPalletForm'
+import DeliveryForm from '../components/DeliveryForm'
+import API from '../utils/API'
 
 class PalletCalculator extends Component {
     constructor(props) {
@@ -99,10 +99,10 @@ class PalletCalculator extends Component {
             return
         }
 
-        if (amount > 25) {
-            alert('Please give a number smaller than 25')
-            return
-        }
+        // if (amount > 25) {
+        //     alert('Please give a number smaller than 25')
+        //     return
+        // }
 
         this.setState({
             amount: amount,
