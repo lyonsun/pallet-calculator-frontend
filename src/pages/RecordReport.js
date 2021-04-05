@@ -11,6 +11,8 @@ class RecordReport extends Component {
 
         this.state = {
             loading: true,
+            error: false,
+            errorMessage: '',
             records: []
         }
     }
@@ -26,6 +28,26 @@ class RecordReport extends Component {
                     records: records
                 })
             })
+            .catch(error => {
+                this.setState({
+                    loading: false,
+                    error: true,
+                    errorMessage: 'Unable to fetch content, please check the API settings.'
+                })
+
+                if (error.response) {
+                    // Request made and server responded
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                } else if (error.request) {
+                    // The request was made but no response was received
+                    console.log(error.request);
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.log('Error', error.message);
+                }
+            })
     }
 
     render() {
@@ -34,7 +56,9 @@ class RecordReport extends Component {
         if (this.state.loading) {
             content = <p className="lead">Loading...</p>
         } else {
-            if (this.state.records.length !== 0) {
+            if (this.state.error) {
+                content = this.state.errorMessage
+            } else if (this.state.records.length !== 0) {
                 content = <>
                     <div className="mt-4 mb-5">
                         <PrintListInExcel

@@ -18,6 +18,8 @@ class PalletCalculator extends Component {
 
         this.state = {
             loading: true,
+            error: false,
+            errorMessage: '',
             palletID: '',
             boxNumber: '',
             articleName: '',
@@ -69,6 +71,26 @@ class PalletCalculator extends Component {
                     this.setState({
                         showDeliveryForm: false
                     })
+                }
+            })
+            .catch(error => {
+                this.setState({
+                    loading: false,
+                    error: true,
+                    errorMessage: 'Unable to fetch content, please check the API settings.'
+                })
+
+                if (error.response) {
+                    // Request made and server responded
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                } else if (error.request) {
+                    // The request was made but no response was received
+                    console.log(error.request);
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.log('Error', error.message);
                 }
             })
     }
@@ -244,24 +266,30 @@ class PalletCalculator extends Component {
 
         let content;
         if (this.state.loading) {
-            content = <div className="col-sm-12 p-4">
+            content = <div className="col-md-12 p-4">
                 <p className="lead">Loading...</p>
             </div>
         } else {
+            if (this.state.error) {
+                content = <div className="col-12 p-4">
+                    { this.state.errorMessage }
+                </div>
+            } else {
             content = <>
-                <div className="col-sm-8 bg-warning p-4 forms">
+                <div className="col-md-8 bg-warning p-4 forms">
                     <NewPalletForm
                         onFormSubmit={this.handleNewPalletFormSubmit} />
 
                     { deliveryForm }
 
                 </div>
-                <div className="col-sm-4 p-4 chart">
+                <div className="col-md-4 p-4 chart">
                     <PalletChart
                         boxesInChart={this.state.boxesInChart}
                         palletID={this.state.palletID} />
                 </div>
             </>
+            }
         }
 
         return (

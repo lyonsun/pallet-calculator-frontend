@@ -9,6 +9,10 @@
     margin-top: 56px;
 }
 
+.main .row {
+    height: 100%;
+}
+
 .forms, .chart {
     display: block;
     min-height: 680px;
